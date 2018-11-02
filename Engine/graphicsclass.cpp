@@ -163,9 +163,9 @@ bool GraphicsClass::Frame()
 
 	// Update the delta variable each frame. (keep this between 0 and 1)
 	delta += 0.001;
-	if(delta >1.0f)
+	if(delta > 100000000.0f)
 	{
-		delta -=1.0f;
+		delta -= 100000000.0f;
 	}
 
 	// Render the graphics scene.
@@ -188,6 +188,12 @@ void GraphicsClass::Advance(float sign)
 {
 	m_Camera->Advance(sign);
 }
+
+void GraphicsClass::Rotate(D3DXVECTOR2 rot)
+{
+	m_Camera->Rotate(rot);
+}
+
 
 bool GraphicsClass::Render(float rotation, float deltavalue)
 {

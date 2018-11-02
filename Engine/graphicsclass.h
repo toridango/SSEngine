@@ -39,6 +39,7 @@ public:
 	bool Frame();
 	void Strafe(float);
 	void Advance(float);
+	void Rotate(D3DXVECTOR2);
 
 private:
 	bool Render(float, float);

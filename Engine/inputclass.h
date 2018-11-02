@@ -22,6 +22,7 @@
 // INCLUDES //
 //////////////
 #include <dinput.h>
+#include "d3dclass.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +44,7 @@ public:
 	bool IsAPressed();
 	bool IsSPressed();
 	bool IsDPressed();
+	D3DXVECTOR2 GetMouseMovement();
 	void GetMouseLocation(int&, int&);
 
 private:

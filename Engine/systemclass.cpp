@@ -127,25 +127,31 @@ void SystemClass::Run()
 			}
 		}
 
-		if (m_Input->IsWPressed() == true)
+		if (m_Input->IsWPressed())
 		{
 			m_Graphics->Advance(0.166);
 		}
-		if (m_Input->IsAPressed() == true)
+		if (m_Input->IsAPressed())
 		{
 			m_Graphics->Strafe(-0.166);
 		}
-		if (m_Input->IsSPressed() == true)
+		if (m_Input->IsSPressed())
 		{
 			m_Graphics->Advance(-0.166);
 		}
-		if (m_Input->IsDPressed() == true)
+		if (m_Input->IsDPressed())
 		{
 			m_Graphics->Strafe(0.166);
 		}
 
+		D3DXVECTOR2 mouseMov = m_Input->GetMouseMovement();
+		if (mouseMov.x || mouseMov.y)
+		{
+			m_Graphics->Rotate(mouseMov);
+		}
+
 		//Check if the user pressed escape and wants to quit
-		if (m_Input->IsEscapePressed() == true)
+		if (m_Input->IsEscapePressed())
 		{
 			done = true;
 		}

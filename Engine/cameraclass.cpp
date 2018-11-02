@@ -89,9 +89,12 @@ void CameraClass::Strafe(float sign) // + for right, - for left
 	// https://softwareengineering.stackexchange.com/questions/17519/why-does-directx-use-a-left-handed-coordinate-system
 	D3DXVec3Cross(&right, &up, &lookAt);
 
-	m_positionX += sign * right.x;
-	m_positionY += sign * right.y;
-	m_positionZ += sign * right.z;
+	D3DXVECTOR3 mov = D3DXVECTOR3(right.x, right.y, right.z);
+	D3DXVec3Normalize(&mov, &mov);
+
+	m_positionX += sign * mov.x;
+	m_positionY += sign * mov.y;
+	m_positionZ += sign * mov.z;
 
 }
 
@@ -118,10 +121,20 @@ void CameraClass::Advance(float sign) // + for forward, - for backward
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	D3DXVec3TransformCoord(&lookAt, &lookAt, &rotationMatrix);
 
-	m_positionX += sign * lookAt.x;
-	m_positionY += sign * lookAt.y;
-	m_positionZ += sign * lookAt.z;
+	D3DXVECTOR3 mov = D3DXVECTOR3(lookAt.x, lookAt.y, lookAt.z);
+	D3DXVec3Normalize(&mov, &mov);
 
+	m_positionX += sign * mov.x;
+	m_positionY += sign * mov.y;
+	m_positionZ += sign * mov.z;
+
+}
+
+
+void CameraClass::Rotate(D3DXVECTOR2 rot)
+{
+	m_rotationX += rot.x;
+	m_rotationY += rot.y;
 }
 
 

@@ -29,6 +29,7 @@ public:
 
 	void Strafe(float);
 	void Advance(float);
+	void Rotate(D3DXVECTOR2);
 
 	void Render();
 	void GetViewMatrix(D3DXMATRIX&);
