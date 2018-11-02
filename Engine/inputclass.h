@@ -21,8 +21,9 @@
 //////////////
 // INCLUDES //
 //////////////
-#include <dinput.h>
 #include "d3dclass.h"
+
+#include <dinput.h>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,12 +40,12 @@ public:
 	void Shutdown();
 	bool Frame();
 
-	bool IsEscapePressed();
-	bool IsWPressed();
-	bool IsAPressed();
-	bool IsSPressed();
-	bool IsDPressed();
-	D3DXVECTOR2 GetMouseMovement();
+	bool IsEscapePressed() const;
+	bool IsWPressed() const;
+	bool IsAPressed() const;
+	bool IsSPressed() const;
+	bool IsDPressed() const;
+	D3DXVECTOR3 GetMouseMovement() const;
 	void GetMouseLocation(int&, int&);
 
 private:

@@ -222,7 +222,7 @@ void InputClass::ProcessInput()
 }
 
 
-bool InputClass::IsEscapePressed()
+bool InputClass::IsEscapePressed() const
 {
 	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
 	// 0x80 is used as a mask to get the bit that tells if the key is being pressed
@@ -235,15 +235,15 @@ bool InputClass::IsEscapePressed()
 	return false;
 }
 
-bool InputClass::IsWPressed() { return (m_keyboardState[DIK_W] & 0x80); }
+bool InputClass::IsWPressed() const { return (m_keyboardState[DIK_W] & 0x80); }
 
-bool InputClass::IsAPressed() { return (m_keyboardState[DIK_A] & 0x80); }
+bool InputClass::IsAPressed() const { return (m_keyboardState[DIK_A] & 0x80); }
 
-bool InputClass::IsSPressed() { return (m_keyboardState[DIK_S] & 0x80); }
+bool InputClass::IsSPressed() const { return (m_keyboardState[DIK_S] & 0x80); }
 
-bool InputClass::IsDPressed() { return (m_keyboardState[DIK_D] & 0x80); }
+bool InputClass::IsDPressed() const { return (m_keyboardState[DIK_D] & 0x80); }
 
-D3DXVECTOR2 InputClass::GetMouseMovement() { return D3DXVECTOR2(m_mouseState.lY, m_mouseState.lX); }
+D3DXVECTOR3 InputClass::GetMouseMovement() const { return D3DXVECTOR3(m_mouseState.lX, m_mouseState.lY, m_mouseState.lZ); }
 
 
 

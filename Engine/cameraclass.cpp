@@ -10,9 +10,9 @@ CameraClass::CameraClass()
 	m_positionY = 0.0f;
 	m_positionZ = 0.0f;
 
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
+	m_rotationPitch = 0.0f;
+	m_rotationYaw = 0.0f;
+	m_rotationRoll = 0.0f;
 }
 
 
@@ -37,9 +37,9 @@ void CameraClass::SetPosition(float x, float y, float z)
 
 void CameraClass::SetRotation(float x, float y, float z)
 {
-	m_rotationX = x;
-	m_rotationY = y;
-	m_rotationZ = z;
+	m_rotationPitch = x;
+	m_rotationYaw = y;
+	m_rotationRoll = z;
 	return;
 }
 
@@ -52,7 +52,7 @@ D3DXVECTOR3 CameraClass::GetPosition()
 
 D3DXVECTOR3 CameraClass::GetRotation()
 {
-	return D3DXVECTOR3(m_rotationX, m_rotationY, m_rotationZ);
+	return D3DXVECTOR3(m_rotationPitch, m_rotationYaw, m_rotationRoll);
 }
 
 void CameraClass::Strafe(float sign) // + for right, - for left
@@ -74,9 +74,9 @@ void CameraClass::Strafe(float sign) // + for right, - for left
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
 	// PI/180 = 0.0174532925f;
-	pitch = m_rotationX * (D3DX_PI / 180.0);
-	yaw = m_rotationY * (D3DX_PI / 180.0);
-	roll = m_rotationZ * (D3DX_PI / 180.0);
+	pitch = m_rotationPitch * (D3DX_PI / 180.0);
+	yaw = m_rotationYaw * (D3DX_PI / 180.0);
+	roll = m_rotationRoll * (D3DX_PI / 180.0);
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
@@ -111,9 +111,9 @@ void CameraClass::Advance(float sign) // + for forward, - for backward
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
 	// PI/180 = 0.0174532925f;
-	pitch = m_rotationX * (D3DX_PI / 180.0);
-	yaw = m_rotationY * (D3DX_PI / 180.0);
-	roll = m_rotationZ * (D3DX_PI / 180.0);
+	pitch = m_rotationPitch * (D3DX_PI / 180.0);
+	yaw = m_rotationYaw * (D3DX_PI / 180.0);
+	roll = m_rotationRoll * (D3DX_PI / 180.0);
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
@@ -131,10 +131,10 @@ void CameraClass::Advance(float sign) // + for forward, - for backward
 }
 
 
-void CameraClass::Rotate(D3DXVECTOR2 rot)
+void CameraClass::Rotate(D3DXVECTOR3 rot)
 {
-	m_rotationX += rot.x;
-	m_rotationY += rot.y;
+	m_rotationPitch += rot.y;
+	m_rotationYaw += rot.x;
 }
 
 
@@ -161,9 +161,9 @@ void CameraClass::Render()
 	lookAt.z = 1.0f;
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = m_rotationX * (D3DX_PI / 180.0);
-	yaw   = m_rotationY * (D3DX_PI / 180.0);
-	roll  = m_rotationZ * (D3DX_PI / 180.0);
+	pitch = m_rotationPitch * (D3DX_PI / 180.0);
+	yaw   = m_rotationYaw * (D3DX_PI / 180.0);
+	roll  = m_rotationRoll * (D3DX_PI / 180.0);
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);

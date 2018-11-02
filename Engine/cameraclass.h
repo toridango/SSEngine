@@ -29,14 +29,14 @@ public:
 
 	void Strafe(float);
 	void Advance(float);
-	void Rotate(D3DXVECTOR2);
+	void Rotate(D3DXVECTOR3);
 
 	void Render();
 	void GetViewMatrix(D3DXMATRIX&);
 
 private:
 	float m_positionX, m_positionY, m_positionZ;
-	float m_rotationX, m_rotationY, m_rotationZ;
+	float m_rotationPitch, m_rotationYaw, m_rotationRoll;
 	D3DXMATRIX m_viewMatrix;
 };
 

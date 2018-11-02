@@ -189,7 +189,7 @@ void GraphicsClass::Advance(float sign)
 	m_Camera->Advance(sign);
 }
 
-void GraphicsClass::Rotate(D3DXVECTOR2 rot)
+void GraphicsClass::Rotate(D3DXVECTOR3 rot)
 {
 	m_Camera->Rotate(rot);
 }

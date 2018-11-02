@@ -144,7 +144,7 @@ void SystemClass::Run()
 			m_Graphics->Strafe(0.166);
 		}
 
-		D3DXVECTOR2 mouseMov = m_Input->GetMouseMovement();
+		D3DXVECTOR3 mouseMov = m_Input->GetMouseMovement();
 		if (mouseMov.x || mouseMov.y)
 		{
 			m_Graphics->Rotate(mouseMov);
@@ -302,7 +302,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	SetFocus(m_hwnd);
 
 	// Hide the mouse cursor.
-	ShowCursor(false);
+	ShowCursor(true);
 
 	return;
 }
