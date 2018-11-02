@@ -42,7 +42,12 @@ bool SystemClass::Initialize()
 	}
 
 	// Initialize the input object.
-	m_Input->Initialize();
+	result = m_Input->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
+	if (!result)
+	{
+		MessageBox(m_hwnd, L"Could not initialise the input object", L"Error", MB_OK);
+		return false;
+	}
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
@@ -75,6 +80,7 @@ void SystemClass::Shutdown()
 	// Release the input object.
 	if(m_Input)
 	{
+		m_Input->Shutdown();
 		delete m_Input;
 		m_Input = 0;
 	}
@@ -121,6 +127,12 @@ void SystemClass::Run()
 			}
 		}
 
+		//Check if the user pressed escape and wants to quit
+		if (m_Input->IsEscapePressed() == true)
+		{
+			done = true;
+		}
+
 	}
 
 	return;
@@ -133,7 +145,14 @@ bool SystemClass::Frame()
 
 
 	// Check if the user pressed escape and wants to exit the application.
-	if(m_Input->IsKeyDown(VK_ESCAPE))
+	/*if(m_Input->IsKeyDown(VK_ESCAPE))
+	{
+		return false;
+	}*/
+
+	// Do the input frame processing
+	result = m_Input->Frame();
+	if (!result)
 	{
 		return false;
 	}
@@ -154,7 +173,7 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 	switch(umsg)
 	{
 		// Check if a key has been pressed on the keyboard.
-		case WM_KEYDOWN:
+		/*case WM_KEYDOWN:
 		{
 			// If a key is pressed send it to the input object so it can record that state.
 			m_Input->KeyDown((unsigned int)wparam);
@@ -173,7 +192,7 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 		{
 			// TODO mouse input ref: https://github.com/metalheadjohny/Stale_Memes/blob/master/Engine/Systems.cpp
 			break;
-		}
+		}*/
 
 		// Any other messages send to the default message handler as our application won't make use of them.
 		default:
