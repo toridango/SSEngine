@@ -55,6 +55,75 @@ D3DXVECTOR3 CameraClass::GetRotation()
 	return D3DXVECTOR3(m_rotationX, m_rotationY, m_rotationZ);
 }
 
+void CameraClass::Strafe(float sign) // + for right, - for left
+{
+	D3DXVECTOR3 up, lookAt, right;
+	float yaw, pitch, roll;
+	D3DXMATRIX rotationMatrix;
+
+
+	// Setup the vector that points upwards.
+	up.x = 0.0f;
+	up.y = 1.0f;
+	up.z = 0.0f;
+	
+	// Setup where the camera is looking by default.
+	lookAt.x = 0.0f;
+	lookAt.y = 0.0f;
+	lookAt.z = 1.0f;
+
+	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
+	// PI/180 = 0.0174532925f;
+	pitch = m_rotationX * (D3DX_PI / 180.0);
+	yaw = m_rotationY * (D3DX_PI / 180.0);
+	roll = m_rotationZ * (D3DX_PI / 180.0);
+
+	// Create the rotation matrix from the yaw, pitch, and roll values.
+	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
+
+	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
+	D3DXVec3TransformCoord(&lookAt, &lookAt, &rotationMatrix);
+	D3DXVec3TransformCoord(&up, &up, &rotationMatrix);
+
+	// LEFT HANDED CROSS PRODUCT
+	// https://softwareengineering.stackexchange.com/questions/17519/why-does-directx-use-a-left-handed-coordinate-system
+	D3DXVec3Cross(&right, &up, &lookAt);
+
+	m_positionX += sign * right.x;
+	m_positionY += sign * right.y;
+	m_positionZ += sign * right.z;
+
+}
+
+void CameraClass::Advance(float sign) // + for forward, - for backward
+{
+	D3DXVECTOR3 lookAt, move;
+	float yaw, pitch, roll;
+	D3DXMATRIX rotationMatrix;
+
+	// Setup where the camera is looking by default.
+	lookAt.x = 0.0f;
+	lookAt.y = 0.0f;
+	lookAt.z = 1.0f;
+
+	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
+	// PI/180 = 0.0174532925f;
+	pitch = m_rotationX * (D3DX_PI / 180.0);
+	yaw = m_rotationY * (D3DX_PI / 180.0);
+	roll = m_rotationZ * (D3DX_PI / 180.0);
+
+	// Create the rotation matrix from the yaw, pitch, and roll values.
+	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
+
+	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
+	D3DXVec3TransformCoord(&lookAt, &lookAt, &rotationMatrix);
+
+	m_positionX += sign * lookAt.x;
+	m_positionY += sign * lookAt.y;
+	m_positionZ += sign * lookAt.z;
+
+}
+
 
 void CameraClass::Render()
 {
@@ -79,9 +148,9 @@ void CameraClass::Render()
 	lookAt.z = 1.0f;
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = m_rotationX * 0.0174532925f;
-	yaw   = m_rotationY * 0.0174532925f;
-	roll  = m_rotationZ * 0.0174532925f;
+	pitch = m_rotationX * (D3DX_PI / 180.0);
+	yaw   = m_rotationY * (D3DX_PI / 180.0);
+	roll  = m_rotationZ * (D3DX_PI / 180.0);
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);

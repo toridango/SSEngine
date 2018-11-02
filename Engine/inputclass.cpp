@@ -225,6 +225,8 @@ void InputClass::ProcessInput()
 bool InputClass::IsEscapePressed()
 {
 	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
+	// 0x80 is used as a mask to get the bit that tells if the key is being pressed
+	// e.g for ESC: 10000001 & 10000000 when its pressed
 	if (m_keyboardState[DIK_ESCAPE] & 0x80)
 	{
 		return true;
@@ -232,6 +234,16 @@ bool InputClass::IsEscapePressed()
 
 	return false;
 }
+
+bool InputClass::IsWPressed() { return (m_keyboardState[DIK_W] & 0x80); }
+
+bool InputClass::IsAPressed() { return (m_keyboardState[DIK_A] & 0x80); }
+
+bool InputClass::IsSPressed() { return (m_keyboardState[DIK_S] & 0x80); }
+
+bool InputClass::IsDPressed() { return (m_keyboardState[DIK_D] & 0x80); }
+
+
 
 
 void InputClass::GetMouseLocation(int& mouseX, int& mouseY)

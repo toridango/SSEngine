@@ -127,6 +127,23 @@ void SystemClass::Run()
 			}
 		}
 
+		if (m_Input->IsWPressed() == true)
+		{
+			m_Graphics->Advance(0.166);
+		}
+		if (m_Input->IsAPressed() == true)
+		{
+			m_Graphics->Strafe(-0.166);
+		}
+		if (m_Input->IsSPressed() == true)
+		{
+			m_Graphics->Advance(-0.166);
+		}
+		if (m_Input->IsDPressed() == true)
+		{
+			m_Graphics->Strafe(0.166);
+		}
+
 		//Check if the user pressed escape and wants to quit
 		if (m_Input->IsEscapePressed() == true)
 		{

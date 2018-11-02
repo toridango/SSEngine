@@ -179,6 +179,16 @@ bool GraphicsClass::Frame()
 }
 
 
+void GraphicsClass::Strafe(float sign)
+{
+	m_Camera->Strafe(sign);
+}
+
+void GraphicsClass::Advance(float sign)
+{
+	m_Camera->Advance(sign);
+}
+
 bool GraphicsClass::Render(float rotation, float deltavalue)
 {
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;

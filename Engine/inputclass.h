@@ -39,6 +39,10 @@ public:
 	bool Frame();
 
 	bool IsEscapePressed();
+	bool IsWPressed();
+	bool IsAPressed();
+	bool IsSPressed();
+	bool IsDPressed();
 	void GetMouseLocation(int&, int&);
 
 private:
