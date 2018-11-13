@@ -133,6 +133,7 @@ void CameraClass::Advance(float sign) // + for forward, - for backward
 
 void CameraClass::Rotate(D3DXVECTOR3 rot)
 {
+	D3DXVec3Normalize(&rot, &rot);
 	m_rotationPitch += rot.y;
 	m_rotationYaw += rot.x;
 }

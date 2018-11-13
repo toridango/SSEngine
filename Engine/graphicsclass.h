@@ -13,6 +13,8 @@
 #include "modelclass.h"
 #include "lightshaderclass.h"
 #include "lightclass.h"
+#include "rendertextureclass.h"
+#include "AssimpModelClass.h"
 
 
 /////////////
@@ -43,13 +45,17 @@ public:
 
 private:
 	bool Render(float, float);
+	bool RenderToTexture();
+	bool RenderScene();
 
 private:
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
+	AssimpModelClass* m_ModelSword;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
+	RenderTextureClass* m_RenderTexture;
 };
 
 #endif

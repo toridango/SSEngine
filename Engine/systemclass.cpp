@@ -213,7 +213,6 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 
 		case WM_INPUT:
 		{
-			// TODO mouse input ref: https://github.com/metalheadjohny/Stale_Memes/blob/master/Engine/Systems.cpp
 			break;
 		}*/
 

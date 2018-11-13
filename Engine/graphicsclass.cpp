@@ -63,7 +63,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/sphere.txt", L"../Engine/data/seafloor.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_ModelSword = new AssimpModelClass;
+	if (!m_ModelSword)
+	{
+		return false;
+	}
+	result = m_ModelSword->Initialize(m_D3D->GetDevice(), "../Engine/Assets/claymore/Mini_claymore.obj", L"../Engine/Assets/claymore/Mini_claymore_texture.png");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -93,11 +105,25 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the light object.
-	m_Light->SetAmbientColour(0.2f, 0.0f, 0.1f, 1.0f);
+	m_Light->SetAmbientColour(1.f, 1.0f, 1.f, 1.0f);
 	m_Light->SetDiffuseColour(.6f, .0f, .3f, 1.0f);
 	m_Light->SetSpecularColour(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
+
+	// Create the render to texture object.
+	m_RenderTexture = new RenderTextureClass;
+	if (!m_RenderTexture)
+	{
+		return false;
+	}
+
+	// Initialize the render to texture object.
+	result = m_RenderTexture->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight);
+	if (!result)
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -128,6 +154,14 @@ void GraphicsClass::Shutdown()
 		m_Model = 0;
 	}
 
+	// Release the model object.
+	if (m_ModelSword)
+	{
+		m_ModelSword->Shutdown();
+		delete m_ModelSword;
+		m_ModelSword = 0;
+	}
+
 	// Release the camera object.
 	if (m_Camera)
 	{
@@ -141,6 +175,14 @@ void GraphicsClass::Shutdown()
 		m_D3D->Shutdown();
 		delete m_D3D;
 		m_D3D = 0;
+	}
+
+	// Release the render to texture object.
+	if (m_RenderTexture)
+	{
+		m_RenderTexture->Shutdown();
+		delete m_RenderTexture;
+		m_RenderTexture = 0;
 	}
 
 	return;
@@ -163,7 +205,7 @@ bool GraphicsClass::Frame()
 
 	// Update the delta variable each frame. (keep this between 0 and 1)
 	delta += 0.001;
-	if(delta > 100000000.0f)
+	if (delta > 100000000.0f)
 	{
 		delta -= 100000000.0f;
 	}
@@ -200,14 +242,27 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	bool result;
 
+	// Render the entire scene to the texture first.
+	result = RenderToTexture();
+	if (!result)
+	{
+		return false;
+	}
 
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	D3DXVECTOR3 light = m_Light->GetDirection();
+	// Render the scene as normal to the back buffer.
+	/*result = RenderScene();
+	if (!result)
+	{
+		return false;
+	}*/
+
+	/*D3DXVECTOR3 light = m_Light->GetDirection();
 	light.x = cos(30 * deltavalue);
 	light.z = sin(30 * deltavalue);
-	m_Light->SetDirection(light.x, light.y, light.z);
+	m_Light->SetDirection(light.x, light.y, light.z);*/
 
 	/*D3DXVECTOR3 cam = { -cos(30 * deltavalue) + 0.0f, -sin(30 * deltavalue) + 0.0f,  -10.0f };
 	m_Camera->SetPosition(cam[0], cam[1], cam[2]);*/
@@ -220,16 +275,17 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
-	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
+	// Rotate the world matrix by the rotation value so that the model will spin.
+	// D3DXMatrixRotationY(&worldMatrix, rotation);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_D3D->GetDeviceContext());
+	//m_Model->Render(m_D3D->GetDeviceContext());
+	m_ModelSword->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the light shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(), 
-		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, m_Model->GetTexture());
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_ModelSword->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(),
+		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, /*m_RenderTexture->GetShaderResourceView()*/m_ModelSword->GetTexture());
 	if (!result)
 	{
 		return false;
@@ -237,6 +293,71 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
+
+	return true;
+}
+
+
+bool GraphicsClass::RenderToTexture()
+{
+	bool result;
+
+
+	// Set the render target to be the render to texture.
+	m_RenderTexture->SetRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
+
+	// Clear the render to texture.
+	m_RenderTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Render the scene now and it will draw to the render to texture instead of the back buffer.
+	result = RenderScene();
+	if (!result)
+	{
+		return false;
+	}
+
+	// Reset the render target back to the original back buffer and not the render to texture anymore.
+	m_D3D->SetBackBufferRenderTarget();
+
+	return true;
+}
+
+
+bool GraphicsClass::RenderScene()
+{
+	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	bool result;
+	static float rotation = 0.0f;
+
+
+	// Generate the view matrix based on the camera's position.
+	m_Camera->Render();
+
+	// Get the world, view, and projection matrices from the camera and d3d objects.
+	m_D3D->GetWorldMatrix(worldMatrix);
+	m_Camera->GetViewMatrix(viewMatrix);
+	m_D3D->GetProjectionMatrix(projectionMatrix);
+
+	// Update the rotation variable each frame.
+	/*rotation += (float)D3DX_PI * 0.005f;
+	if (rotation > 360.0f)
+	{
+		rotation -= 360.0f;
+	}*/
+
+	D3DXMatrixRotationY(&worldMatrix, rotation);
+
+	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_Model->Render(m_D3D->GetDeviceContext());
+
+	// Render the model using the light shader.
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(),
+		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), 0.0, m_Model->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
 
 	return true;
 }

@@ -217,7 +217,7 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 bool ModelClass::LoadModel(char* filename)
 {
-	ifstream fin;
+	std::ifstream fin;
 	char input;
 	int i;
 
