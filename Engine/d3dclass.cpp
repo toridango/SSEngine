@@ -12,8 +12,10 @@ D3DClass::D3DClass()
 	m_renderTargetView = 0;
 	m_depthStencilBuffer = 0;
 	m_depthStencilState = 0;
+	m_depthStencilStateSky = 0;
 	m_depthStencilView = 0;
 	m_rasterState = 0;
+	m_rasterStateSky = 0;
 }
 
 
@@ -282,6 +284,16 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Set the depth stencil state.
 	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
 
+	//depthStencilDesc.DepthEnable = false;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	// Create the depth stencil state.
+	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateSky);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+
 	// Initialize the depth stencil view.
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 
@@ -321,6 +333,16 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	// Now set the rasterizer state.
 	m_deviceContext->RSSetState(m_rasterState);
+
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+
+	// Create the rasterizer state from the description we just filled out.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateSky);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	
 	
 	// Setup the viewport for rendering.
     viewport.Width = (float)screenWidth;
@@ -364,6 +386,12 @@ void D3DClass::Shutdown()
 		m_rasterState = 0;
 	}
 
+	if (m_rasterStateSky)
+	{
+		m_rasterStateSky->Release();
+		m_rasterStateSky = 0;
+	}
+
 	if(m_depthStencilView)
 	{
 		m_depthStencilView->Release();
@@ -374,6 +402,12 @@ void D3DClass::Shutdown()
 	{
 		m_depthStencilState->Release();
 		m_depthStencilState = 0;
+	}
+
+	if (m_depthStencilStateSky)
+	{
+		m_depthStencilStateSky->Release();
+		m_depthStencilStateSky = 0;
 	}
 
 	if(m_depthStencilBuffer)
@@ -447,6 +481,27 @@ void D3DClass::EndScene()
 
 	return;
 }
+
+
+
+
+
+void D3DClass::setSkyMode(bool how)
+{
+	if (how)
+	{
+		m_deviceContext->RSSetState(m_rasterStateSky);
+		m_deviceContext->OMSetDepthStencilState(m_depthStencilStateSky, 1);
+	}
+	else
+	{
+		m_deviceContext->RSSetState(m_rasterState);
+		m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+	}
+	
+}
+
+
 
 
 ID3D11Device* D3DClass::GetDevice()

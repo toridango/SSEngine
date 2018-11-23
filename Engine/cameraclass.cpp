@@ -55,7 +55,7 @@ D3DXVECTOR3 CameraClass::GetRotation()
 	return D3DXVECTOR3(m_rotationPitch, m_rotationYaw, m_rotationRoll);
 }
 
-void CameraClass::Strafe(float sign) // + for right, - for left
+D3DXVECTOR3 CameraClass::Strafe(float sign) // + for right, - for left
 {
 	D3DXVECTOR3 up, lookAt, right;
 	float yaw, pitch, roll;
@@ -96,9 +96,11 @@ void CameraClass::Strafe(float sign) // + for right, - for left
 	m_positionY += sign * mov.y;
 	m_positionZ += sign * mov.z;
 
+	return D3DXVECTOR3(m_positionX, m_positionY, m_positionZ);
+
 }
 
-void CameraClass::Advance(float sign) // + for forward, - for backward
+D3DXVECTOR3 CameraClass::Advance(float sign) // + for forward, - for backward
 {
 	D3DXVECTOR3 lookAt, move;
 	float yaw, pitch, roll;
@@ -127,6 +129,9 @@ void CameraClass::Advance(float sign) // + for forward, - for backward
 	m_positionX += sign * mov.x;
 	m_positionY += sign * mov.y;
 	m_positionZ += sign * mov.z;
+
+
+	return D3DXVECTOR3(m_positionX, m_positionY, m_positionZ);
 
 }
 

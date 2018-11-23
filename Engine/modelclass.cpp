@@ -23,7 +23,7 @@ ModelClass::~ModelClass()
 }
 
 
-bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
+bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename, bool iscubemap)
 {
 	bool result;
 
@@ -36,7 +36,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	}
 
 	// Load the texture for this model.
-	result = LoadTexture(device, textureFilename);
+	result = LoadTexture(device, textureFilename, iscubemap);
 	if (!result)
 	{
 		return false;
@@ -292,7 +292,7 @@ ID3D11ShaderResourceView* ModelClass::GetTexture()
 }
 
 
-bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename)
+bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename, bool iscubemap)
 {
 	bool result;
 
@@ -305,7 +305,7 @@ bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename)
 	}
 
 	// Initialize the texture object.
-	result = m_Texture->Initialize(device, filename);
+	result = m_Texture->Initialize(device, filename, iscubemap);
 	if (!result)
 	{
 		return false;

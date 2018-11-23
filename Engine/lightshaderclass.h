@@ -55,6 +55,7 @@ public:
 	~LightShaderClass();
 
 	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device*, HWND, WCHAR* vs, WCHAR* ps);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
 		D3DXMATRIX projectionMatrix, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColour, D3DXVECTOR4 diffuseColour,

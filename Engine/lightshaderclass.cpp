@@ -41,6 +41,21 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
+bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd, WCHAR* vs_filename, WCHAR* ps_filename)
+{
+	bool result;
+
+
+	// Initialize the vertex and pixel shaders.
+	result = InitializeShader(device, hwnd, vs_filename, ps_filename);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 
 void LightShaderClass::Shutdown()
 {

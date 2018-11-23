@@ -39,7 +39,7 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device*, char*, WCHAR*);
+	bool Initialize(ID3D11Device*, char*, WCHAR*, bool iscubemap = false);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
@@ -56,7 +56,7 @@ private:
 	bool LoadModel(char*);
 	void ReleaseModel();
 
-	bool LoadTexture(ID3D11Device*, WCHAR*);
+	bool LoadTexture(ID3D11Device*, WCHAR*, bool);
 	void ReleaseTexture();
 
 

@@ -10,6 +10,7 @@ GraphicsClass::GraphicsClass()
 	m_Camera = 0;
 	m_Model = 0;
 	m_LightShader = 0;
+	m_SkyShader = 0;
 	m_Light = 0;
 }
 
@@ -52,7 +53,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_camPos = D3DXVECTOR3(0.0f, 0.0f, -10.0f);
+	m_Camera->SetPosition(m_camPos.x, m_camPos.y, m_camPos.z);
 
 
 	// Create the model object.
@@ -63,7 +65,22 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/grassfloor.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the model object.
+	m_ModelSky = new ModelClass;
+	if (!m_ModelSky)
+	{
+		return false;
+	}
+
+	// Initialize the model object.
+	result = m_ModelSky->Initialize(m_D3D->GetDevice(), "../Engine/data/sphere.txt", L"../Engine/Assets/Skybox/skybox_texture.dds", true);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -76,6 +93,18 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 	result = m_ModelSword->Initialize(m_D3D->GetDevice(), "../Engine/Assets/claymore/Mini_claymore.obj", L"../Engine/Assets/claymore/Mini_claymore_texture.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_ModelRock = new AssimpModelClass;
+	if (!m_ModelRock)
+	{
+		return false;
+	}
+	result = m_ModelRock->Initialize(m_D3D->GetDevice(), "../Engine/Assets/rock/stone.obj", L"../Engine/Assets/rock/tex/stone_albedo.png");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -96,6 +125,22 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
 		return false;
 	}
+
+
+	// Create the sky shader object.
+	m_SkyShader = new LightShaderClass;
+	if (!m_SkyShader)
+	{
+		return false;
+	}
+
+	result = m_SkyShader->Initialize(m_D3D->GetDevice(), hwnd, L"../Engine/sky.vs", L"../Engine/sky.ps");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
+		return false;
+	}
+
 
 	// Create the light object.
 	m_Light = new LightClass;
@@ -146,6 +191,14 @@ void GraphicsClass::Shutdown()
 		m_LightShader = 0;
 	}
 
+	// Release the light shader object.
+	if (m_SkyShader)
+	{
+		m_SkyShader->Shutdown();
+		delete m_SkyShader;
+		m_SkyShader = 0;
+	}
+
 	// Release the model object.
 	if (m_Model)
 	{
@@ -155,11 +208,27 @@ void GraphicsClass::Shutdown()
 	}
 
 	// Release the model object.
+	if (m_ModelSky)
+	{
+		m_ModelSky->Shutdown();
+		delete m_ModelSky;
+		m_ModelSky = 0;
+	}
+
+	// Release the model object.
 	if (m_ModelSword)
 	{
 		m_ModelSword->Shutdown();
 		delete m_ModelSword;
 		m_ModelSword = 0;
+	}
+
+	// Release the model object.
+	if (m_ModelRock)
+	{
+		m_ModelRock->Shutdown();
+		delete m_ModelRock;
+		m_ModelRock = 0;
 	}
 
 	// Release the camera object.
@@ -223,12 +292,12 @@ bool GraphicsClass::Frame()
 
 void GraphicsClass::Strafe(float sign)
 {
-	m_Camera->Strafe(sign);
+	m_camPos = m_Camera->Strafe(sign);
 }
 
 void GraphicsClass::Advance(float sign)
 {
-	m_Camera->Advance(sign);
+	 m_camPos = m_Camera->Advance(sign);
 }
 
 void GraphicsClass::Rotate(D3DXVECTOR3 rot)
@@ -243,14 +312,14 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	bool result;
 
 	// Render the entire scene to the texture first.
-	result = RenderToTexture();
+	/*result = RenderToTexture();
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	// Clear the buffers to begin the scene.
-	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 0.0f);
 
 	// Render the scene as normal to the back buffer.
 	/*result = RenderScene();
@@ -267,6 +336,18 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	/*D3DXVECTOR3 cam = { -cos(30 * deltavalue) + 0.0f, -sin(30 * deltavalue) + 0.0f,  -10.0f };
 	m_Camera->SetPosition(cam[0], cam[1], cam[2]);*/
 
+
+	D3DXMATRIX transform;
+	D3DXMatrixIdentity(&transform);
+	D3DXMATRIX rotx;
+	D3DXMatrixIdentity(&transform);
+	D3DXMATRIX roty;
+	D3DXMatrixIdentity(&transform);
+	D3DXMATRIX rotz;
+	D3DXMatrixIdentity(&transform);
+
+
+
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
 
@@ -277,10 +358,48 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 
 	// Rotate the world matrix by the rotation value so that the model will spin.
 	// D3DXMatrixRotationY(&worldMatrix, rotation);
+	
+	// Scaling
+	transform._11 = 10.0f;
+	transform._22 = 0.01f;
+	transform._33 = 10.0f;
+	// Translation
+	transform._41 = 0.0f;
+	transform._42 = -2.0f;
+	transform._43 = 0.0f;
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &transform);
+
+
+	m_Model->Render(m_D3D->GetDeviceContext());
+
+	// Render the model using the light shader.
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(),
+		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, m_Model->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+
+	// Get the world, view, and projection matrices from the camera and d3d objects.
+	m_D3D->GetWorldMatrix(worldMatrix);
+
+	D3DXMatrixIdentity(&transform);
+	
+	D3DXMatrixRotationZ(&rotz, 45 * (D3DX_PI / 180.0f));
+	D3DXMatrixRotationY(&roty, 90 * (D3DX_PI / 180.0f));
+
+	D3DXMatrixMultiply(&transform, &roty, &rotz);
+	// Translation
+	transform._41 = 0.5f;
+	transform._42 = 1.4f;
+	transform._43 = -0.2f;
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &transform);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	//m_Model->Render(m_D3D->GetDeviceContext());
 	m_ModelSword->Render(m_D3D->GetDeviceContext());
+
 
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_ModelSword->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
@@ -290,6 +409,64 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	{
 		return false;
 	}
+
+
+
+	// Get the world, view, and projection matrices from the camera and d3d objects.
+	m_D3D->GetWorldMatrix(worldMatrix);
+
+	D3DXMatrixIdentity(&transform);
+	// Scaling
+	transform._11 = 3.0f;
+	transform._22 = 3.0f;
+	transform._33 = 3.0f;
+	// Translation
+	transform._41 = 0.0f;
+	transform._42 = -0.6f;
+	transform._43 = 0.0f;
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &transform);
+
+	D3DXVECTOR4 v = m_Light->GetSpecularColour();
+	v.x = v.y = v.z = v.w = 0.0f;
+
+	m_ModelRock->Render(m_D3D->GetDeviceContext());
+
+	// Render the model using the light shader.
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_ModelRock->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(),
+		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, m_ModelRock->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+
+	m_D3D->GetWorldMatrix(worldMatrix);
+
+	// Translation
+	transform._41 = m_camPos.x;
+	transform._42 = m_camPos.y;
+	transform._43 = m_camPos.z;
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &transform);
+
+
+	m_D3D->setSkyMode(true);
+
+	m_ModelSky->Render(m_D3D->GetDeviceContext());
+
+	// Render the model using the light shader.
+	result = m_SkyShader->Render(m_D3D->GetDeviceContext(), m_ModelSky->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(),
+		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, m_ModelSky->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+
+	m_D3D->setSkyMode(false);
+
+
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();

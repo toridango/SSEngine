@@ -49,11 +49,16 @@ private:
 	bool RenderScene();
 
 private:
+
+	D3DXVECTOR3 m_camPos;
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
+	ModelClass* m_ModelSky;
 	AssimpModelClass* m_ModelSword;
+	AssimpModelClass* m_ModelRock;
 	LightShaderClass* m_LightShader;
+	LightShaderClass* m_SkyShader;
 	LightClass* m_Light;
 	RenderTextureClass* m_RenderTexture;
 };

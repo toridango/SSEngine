@@ -27,8 +27,8 @@ public:
 	D3DXVECTOR3 GetPosition();
 	D3DXVECTOR3 GetRotation();
 
-	void Strafe(float);
-	void Advance(float);
+	D3DXVECTOR3 Strafe(float);
+	D3DXVECTOR3 Advance(float);
 	void Rotate(D3DXVECTOR3);
 
 	void Render();
