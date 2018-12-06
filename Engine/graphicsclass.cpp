@@ -330,8 +330,8 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 
 	/*D3DXVECTOR3 light = m_Light->GetDirection();
 	light.x = cos(30 * deltavalue);
-	light.z = sin(30 * deltavalue);
-	m_Light->SetDirection(light.x, light.y, light.z);*/
+	light.z = sin(30 * deltavalue);*/
+	m_Light->SetDirection(cos(30), 0.0f, sin(30));
 
 	/*D3DXVECTOR3 cam = { -cos(30 * deltavalue) + 0.0f, -sin(30 * deltavalue) + 0.0f,  -10.0f };
 	m_Camera->SetPosition(cam[0], cam[1], cam[2]);*/
