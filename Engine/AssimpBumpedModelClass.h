@@ -55,7 +55,7 @@ public:
 	AssimpBumpedModelClass(const AssimpBumpedModelClass&);
 	~AssimpBumpedModelClass();
 
-	bool Initialize(ID3D11Device* device, const char* modelFilename, WCHAR* textureFilename1, WCHAR* textureFilename2);
+	bool Initialize(ID3D11Device* device, const char* modelFilename, WCHAR* textureFilename1, WCHAR* etc, WCHAR*, WCHAR*, WCHAR*);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 	
@@ -67,7 +67,7 @@ private:
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTextures(ID3D11Device* device, WCHAR* filename1, WCHAR* filename2);
+	bool LoadTextures(ID3D11Device* device, WCHAR* filename1, WCHAR* etc, WCHAR*, WCHAR*, WCHAR*);
 	void ReleaseTextures();
 
 	bool LoadModel(const char* modelFilename);

@@ -119,7 +119,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	{
 		return false;
 	}
-	result = m_ModelRock->Initialize(m_D3D->GetDevice(), "../Engine/Assets/rock/stone.obj", L"../Engine/Assets/rock/tex/stone_albedo.png", L"../Engine/Assets/rock/tex/stone_normal.png");
+	result = m_ModelRock->Initialize(m_D3D->GetDevice(), "../Engine/Assets/rock/stone.obj", 
+														L"../Engine/Assets/rock/tex/stone_albedo.png", 
+														L"../Engine/Assets/rock/tex/stone_normal.png",
+														L"../Engine/Assets/rock/tex/stone_diffuse.png",
+														L"../Engine/Assets/rock/tex/stone_ao.png", 
+														L"../Engine/Assets/rock/tex/stone_specular.png");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -479,7 +484,7 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(),
 		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, m_ModelRock->GetTexture());*/
 	result = m_BumpMapShader->Render(m_D3D->GetDeviceContext(), m_ModelRock->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_ModelRock->GetTextureArray(), m_Light->GetDirection(), m_Light->GetDiffuseColour());
+		m_ModelRock->GetTextureArray(), m_Light->GetDirection());
 	if (!result)
 	{
 		return false;

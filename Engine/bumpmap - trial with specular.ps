@@ -1,0 +1,132 @@
+////////////////////////////////////////////////////////////////////////////////
+// Filename: bumpmap.ps
+////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////
+// GLOBALS //
+/////////////
+
+// The bump map shader requires two textures
+// The first texture in the array is the color texture
+// The second texture is the normal map.
+
+Texture2D shaderTextures[4];
+SamplerState SampleType;
+
+// Just like most light shaders the direction and color 
+// of the light is required for lighting calculations.
+
+cbuffer LightBuffer
+{
+    float3 lightDirection;
+};
+
+
+//////////////
+// TYPEDEFS //
+//////////////
+struct PixelInputType
+{
+    float4 position : SV_POSITION;
+    float2 tex : TEXCOORD0;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float3 binormal : BINORMAL;
+};
+
+// First the pixel is sampled from the color texture and the normal map. 
+
+// The normal map value is then multiplied by two and is subtracted one to move it into the -1.0 to +1.0 float range. 
+
+// This has to be done because the sampled value that is presented is in the 0.0 to +1.0 texture range,
+// which only covers half the range needed for bump map normal calculations
+
+// After that the bump normal is calculated using the equation: 
+//    bumpNormal = (bumpMap.x * input.tangent) + (bumpMap.y * input.binormal) + (bumpMap.z * input.normal);
+
+// This bump normal is normalized and then used to determine the light intensity at this pixel 
+// by doing a dot product with the light direction. 
+
+// Once the light intensity at this pixel has been obtained the bump mapping is done
+// The light intensity is used with the light color and texture color to get the final pixel color.
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
+float4 BumpMapPixelShader(PixelInputType input) : SV_TARGET
+{
+    float4 textureColor;
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 bumpMap;
+    float3 bumpNormal;
+    float3 lightDir;
+    float lightIntensity;
+    float4 colour;
+    float4 specular;
+    float3 reflection;
+
+
+    // Sample the texture pixel at this location.
+    textureColor = shaderTextures[0].Sample(SampleType, input.tex);
+	diffuseColor = shaderTextures[2].Sample(SampleType, input.tex);
+	specularColor = shaderTextures[3].Sample(SampleType, input.tex);
+	
+    // Sample the pixel in the bump map.
+    bumpMap = shaderTextures[1].Sample(SampleType, input.tex);
+
+    // Expand the range of the normal value from (0, +1) to (-1, +1).
+    bumpMap = (bumpMap * 2.0f) - 1.0f;
+
+    // Calculate the normal from the data in the bump map.
+    bumpNormal = (bumpMap.x * input.tangent) + (bumpMap.y * input.binormal) + (bumpMap.z * input.normal);
+	
+    // Normalize the resulting bump normal.
+    bumpNormal = normalize(bumpNormal);
+
+    // Invert the light direction for calculations.
+    lightDir = -lightDirection;
+
+    // Calculate the amount of light on this pixel based on the bump map normal value.
+    lightIntensity = saturate(dot(bumpNormal, lightDir));
+
+    // Determine the final diffuse color based on the diffuse color and the amount of light intensity.
+    //color = saturate(diffuseColor * lightIntensity);
+
+	//color = saturate(color + specularColor);
+	
+    // Combine the final bump light color with the texture color.
+    //color = color * textureColor;
+	
+	colour = textureColor;
+
+	// Initialize the specular color.
+    specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    // Determine the final amount of diffuse color based on the diffuse color combined with the light intensity.
+    if(lightIntensity > 0.0f)
+	{
+
+		// Determine the final diffuse color based on the diffuse color and the amount of light intensity.
+		colour += (diffuseColor * lightIntensity);
+
+		// Saturate the ambient and diffuse colour.
+        colour = saturate(colour);
+
+		// Calculate the reflection vector based on the light intensity, normal vector, and light direction.
+        reflection = normalize(2 * lightIntensity * input.normal - lightDir);
+	
+		// Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.
+        specular = pow(saturate(dot(reflection, lightDir)), specularColor);
+	}
+		
+	// Multiply the texture pixel and the final diffuse color to get the final pixel color result.
+	colour = colour * textureColor;
+	
+	
+	
+	
+	
+    return colour;
+}

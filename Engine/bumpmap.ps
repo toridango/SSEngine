@@ -7,11 +7,12 @@
 // GLOBALS //
 /////////////
 
-// The bump map shader requires two textures
+// The bump map shader requires two textures // but I'm pushing five for all presaved colours
 // The first texture in the array is the color texture
 // The second texture is the normal map.
+// third is diffuse, fourth is ambient occlusion fifth is specular
 
-Texture2D shaderTextures[2];
+Texture2D shaderTextures[5];
 SamplerState SampleType;
 
 // Just like most light shaders the direction and color 
@@ -19,7 +20,6 @@ SamplerState SampleType;
 
 cbuffer LightBuffer
 {
-    float4 diffuseColor;
     float3 lightDirection;
 };
 
@@ -57,16 +57,26 @@ struct PixelInputType
 ////////////////////////////////////////////////////////////////////////////////
 float4 BumpMapPixelShader(PixelInputType input) : SV_TARGET
 {
-    float4 textureColor;
+    float4 textureColour;
+    float4 diffuseColour;
+    float4 aoColour;
+    float4 specularColour;
     float4 bumpMap;
     float3 bumpNormal;
     float3 lightDir;
     float lightIntensity;
-    float4 color;
+    float4 colour;
+    float3 reflection;
+    float4 specular;
 
 
     // Sample the texture pixel at this location.
-    textureColor = shaderTextures[0].Sample(SampleType, input.tex);
+    textureColour = shaderTextures[0].Sample(SampleType, input.tex);
+	diffuseColour = shaderTextures[2].Sample(SampleType, input.tex);
+	aoColour = shaderTextures[3].Sample(SampleType, input.tex);
+	specularColour = shaderTextures[4].Sample(SampleType, input.tex);
+	
+	//colour = textureColour;
 	
     // Sample the pixel in the bump map.
     bumpMap = shaderTextures[1].Sample(SampleType, input.tex);
@@ -85,12 +95,16 @@ float4 BumpMapPixelShader(PixelInputType input) : SV_TARGET
 
     // Calculate the amount of light on this pixel based on the bump map normal value.
     lightIntensity = saturate(dot(bumpNormal, lightDir));
-
-    // Determine the final diffuse color based on the diffuse color and the amount of light intensity.
-    color = saturate(diffuseColor * lightIntensity);
-
-    // Combine the final bump light color with the texture color.
-    color = color * textureColor;
 	
-    return color;
+	
+    // Determine the final diffuse color based on the diffuse color and the amount of light intensity.
+    colour = saturate(specularColour * lightIntensity); 
+
+	colour = saturate(colour + aoColour); 
+	
+    // Combine the final bump light color with the texture color.
+    colour = colour * textureColour;
+	
+	
+    return colour;
 }

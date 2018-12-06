@@ -21,7 +21,7 @@ AssimpBumpedModelClass::~AssimpBumpedModelClass()
 }
 
 
-bool AssimpBumpedModelClass::Initialize(ID3D11Device* device, const char* modelFilename, WCHAR* textureFilename1, WCHAR* textureFilename2)
+bool AssimpBumpedModelClass::Initialize(ID3D11Device* device, const char* modelFilename, WCHAR* textureFilename1, WCHAR* textureFilename2, WCHAR* textureFilename3, WCHAR* textureFilename4, WCHAR* textureFilename5)
 {
 	bool result;
 
@@ -51,7 +51,7 @@ bool AssimpBumpedModelClass::Initialize(ID3D11Device* device, const char* modelF
 	// The first is the color texture and the second is the normal map.
 
 	// Load the textures for this model.
-	result = LoadTextures(device, textureFilename1, textureFilename2);
+	result = LoadTextures(device, textureFilename1, textureFilename2, textureFilename3, textureFilename4, textureFilename5);
 	if (!result)
 	{
 		return false;
@@ -315,7 +315,7 @@ ID3D11ShaderResourceView** AssimpBumpedModelClass::GetTextureArray()
 }
 
 
-bool AssimpBumpedModelClass::LoadTextures(ID3D11Device* device, WCHAR* filename1, WCHAR* filename2)
+bool AssimpBumpedModelClass::LoadTextures(ID3D11Device* device, WCHAR* filename1, WCHAR* filename2, WCHAR* filename3, WCHAR* filename4, WCHAR* filename5)
 {
 	bool result;
 
@@ -328,7 +328,7 @@ bool AssimpBumpedModelClass::LoadTextures(ID3D11Device* device, WCHAR* filename1
 	}
 
 	// Initialize the texture object.
-	result = m_TextureArray->Initialize(device, filename1, filename2);
+	result = m_TextureArray->Initialize(device, filename1, filename2, filename3, filename4, filename5);
 	if (!result)
 	{
 		return false;
