@@ -82,7 +82,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssimpBumpedModelClass.cpp" />
     <ClCompile Include="AssimpModelClass.cpp" />
+    <ClCompile Include="bumpmapshaderclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
@@ -94,10 +96,13 @@
     <ClCompile Include="rendertextureclass.cpp" />
     <ClCompile Include="soundclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
+    <ClCompile Include="texturearrayclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssimpBumpedModelClass.h" />
     <ClInclude Include="AssimpModelClass.h" />
+    <ClInclude Include="bumpmapshaderclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="graphicsclass.h" />
@@ -108,11 +113,16 @@
     <ClInclude Include="rendertextureclass.h" />
     <ClInclude Include="soundclass.h" />
     <ClInclude Include="systemclass.h" />
+    <ClInclude Include="texturearrayclass.h" />
     <ClInclude Include="textureclass.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bumpmap.ps" />
+    <None Include="bumpmap.vs" />
     <None Include="light.ps" />
     <None Include="light.vs" />
+    <None Include="sky.ps" />
+    <None Include="sky.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

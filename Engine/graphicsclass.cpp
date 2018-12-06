@@ -12,6 +12,7 @@ GraphicsClass::GraphicsClass()
 	m_LightShader = 0;
 	m_SkyShader = 0;
 	m_Light = 0;
+	m_BumpMapShader = 0;
 }
 
 
@@ -99,7 +100,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_ModelRock = new AssimpModelClass;
+	// Old Rock
+	/*m_ModelRock = new AssimpModelClass;
 	if (!m_ModelRock)
 	{
 		return false;
@@ -109,7 +111,39 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
+	}*/
+
+	// New Rock
+	m_ModelRock = new AssimpBumpedModelClass;
+	if (!m_ModelRock)
+	{
+		return false;
 	}
+	result = m_ModelRock->Initialize(m_D3D->GetDevice(), "../Engine/Assets/rock/stone.obj", L"../Engine/Assets/rock/tex/stone_albedo.png", L"../Engine/Assets/rock/tex/stone_normal.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Here we create and initialize the BumpMapShaderClass object.
+
+	// Create the bump map shader object.
+	m_BumpMapShader = new BumpMapShaderClass;
+	if (!m_BumpMapShader)
+	{
+		return false;
+	}
+
+	// Initialize the bump map shader object.
+	result = m_BumpMapShader->Initialize(m_D3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bump map shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+
 
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
@@ -254,6 +288,14 @@ void GraphicsClass::Shutdown()
 		m_RenderTexture = 0;
 	}
 
+	// Release the bump map shader object.
+	if (m_BumpMapShader)
+	{
+		m_BumpMapShader->Shutdown();
+		delete m_BumpMapShader;
+		m_BumpMapShader = 0;
+	}
+
 	return;
 }
 
@@ -331,7 +373,7 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	/*D3DXVECTOR3 light = m_Light->GetDirection();
 	light.x = cos(30 * deltavalue);
 	light.z = sin(30 * deltavalue);*/
-	m_Light->SetDirection(cos(30), 0.0f, sin(30));
+	m_Light->SetDirection(cos(30), sin(30), 0.0f);
 
 	/*D3DXVECTOR3 cam = { -cos(30 * deltavalue) + 0.0f, -sin(30 * deltavalue) + 0.0f,  -10.0f };
 	m_Camera->SetPosition(cam[0], cam[1], cam[2]);*/
@@ -430,11 +472,14 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	v.x = v.y = v.z = v.w = 0.0f;
 
 	m_ModelRock->Render(m_D3D->GetDeviceContext());
+	m_Light->SetDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Render the model using the light shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_ModelRock->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+	/*result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_ModelRock->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 		m_Light->GetDirection(), m_Light->GetAmbientColour(), m_Light->GetDiffuseColour(), m_Camera->GetPosition(),
-		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, m_ModelRock->GetTexture());
+		m_Light->GetSpecularColour(), m_Light->GetSpecularPower(), deltavalue, m_ModelRock->GetTexture());*/
+	result = m_BumpMapShader->Render(m_D3D->GetDeviceContext(), m_ModelRock->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_ModelRock->GetTextureArray(), m_Light->GetDirection(), m_Light->GetDiffuseColour());
 	if (!result)
 	{
 		return false;

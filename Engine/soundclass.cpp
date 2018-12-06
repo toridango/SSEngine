@@ -392,7 +392,8 @@ bool SoundClass::PlayWaveFile()
 	}
 
 	// Play the contents of the secondary sound buffer.
-	result = m_secondaryBuffer1->Play(0, 0, 0);
+	// 3rd parameter are the flags. Currently activates looping
+	result = m_secondaryBuffer1->Play(0, 0, DSBPLAY_LOOPING);
 	if (FAILED(result))
 	{
 		return false;

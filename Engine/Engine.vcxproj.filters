@@ -54,6 +54,15 @@
     <ClCompile Include="soundclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bumpmapshaderclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AssimpBumpedModelClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="texturearrayclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h">
@@ -92,12 +101,33 @@
     <ClInclude Include="soundclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bumpmapshaderclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AssimpBumpedModelClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="texturearrayclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="light.vs">
       <Filter>Shader Files</Filter>
     </None>
     <None Include="light.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="sky.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="sky.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="bumpmap.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="bumpmap.vs">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

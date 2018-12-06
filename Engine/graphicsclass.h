@@ -15,6 +15,8 @@
 #include "lightclass.h"
 #include "rendertextureclass.h"
 #include "AssimpModelClass.h"
+#include "AssimpBumpedModelClass.h"
+#include "bumpmapshaderclass.h"
 
 
 /////////////
@@ -56,11 +58,12 @@ private:
 	ModelClass* m_Model;
 	ModelClass* m_ModelSky;
 	AssimpModelClass* m_ModelSword;
-	AssimpModelClass* m_ModelRock;
+	AssimpBumpedModelClass* m_ModelRock;
 	LightShaderClass* m_LightShader;
 	LightShaderClass* m_SkyShader;
 	LightClass* m_Light;
 	RenderTextureClass* m_RenderTexture;
+	BumpMapShaderClass* m_BumpMapShader;
 };
 
 #endif
