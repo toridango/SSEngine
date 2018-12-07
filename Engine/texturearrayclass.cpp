@@ -43,22 +43,22 @@ bool TextureArrayClass::Initialize(ID3D11Device* device, WCHAR* filename1, WCHAR
 		return false;
 	}
 
-	// Load the second texture in.
+	// Load the third texture in.
 	result = D3DX11CreateShaderResourceViewFromFile(device, filename3, NULL, NULL, &m_textures[2], NULL);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
-	// Load the second texture in.
+	// Load the fourth texture in.
 	result = D3DX11CreateShaderResourceViewFromFile(device, filename4, NULL, NULL, &m_textures[3], NULL);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
-	// Load the second texture in.
-	result = D3DX11CreateShaderResourceViewFromFile(device, filename4, NULL, NULL, &m_textures[4], NULL);
+	// Load the fifth texture in.
+	result = D3DX11CreateShaderResourceViewFromFile(device, filename5, NULL, NULL, &m_textures[4], NULL);
 	if (FAILED(result))
 	{
 		return false;

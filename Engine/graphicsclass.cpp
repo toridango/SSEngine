@@ -69,7 +69,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/grassfloor.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the cube model object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -84,7 +84,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_ModelSky->Initialize(m_D3D->GetDevice(), "../Engine/data/sphere.txt", L"../Engine/Assets/Skybox/skybox_texture.dds", true);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the sky model object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -96,7 +96,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_ModelSword->Initialize(m_D3D->GetDevice(), "../Engine/Assets/claymore/Mini_claymore.obj", L"../Engine/Assets/claymore/Mini_claymore_texture.png");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the sword model object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -127,7 +127,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 														L"../Engine/Assets/rock/tex/stone_specular.png");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the rock model object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -176,7 +176,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_SkyShader->Initialize(m_D3D->GetDevice(), hwnd, L"../Engine/sky.vs", L"../Engine/sky.ps");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the sky light shader object.", L"Error", MB_OK);
 		return false;
 	}
 

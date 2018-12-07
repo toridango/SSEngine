@@ -32,7 +32,7 @@ private:
 
 	struct LightBufferType
 	{
-		D3DXVECTOR4 diffuseColor;
+		// D3DXVECTOR4 diffuseColor;
 		D3DXVECTOR3 lightDirection;
 		float padding;
 	};

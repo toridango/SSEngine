@@ -398,7 +398,7 @@ bool BumpMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// the second texture is the normal map.
 
 	// Set shader texture array resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 4, textureArray);
+	deviceContext->PSSetShaderResources(0, 5, textureArray);
 	
 	// The light buffer in the pixel shader is then set with the diffuse light color and light direction.
 	// Lock the light constant buffer so it can be written to.

@@ -20,6 +20,7 @@ SamplerState SampleType;
 
 cbuffer LightBuffer
 {
+	// float4 diffuseColor;
     float3 lightDirection;
 };
 
@@ -66,20 +67,17 @@ float4 BumpMapPixelShader(PixelInputType input) : SV_TARGET
     float3 lightDir;
     float lightIntensity;
     float4 colour;
-    float3 reflection;
-    float4 specular;
 
 
-    // Sample the texture pixel at this location.
+    // Sample the texture pixels at this location.
     textureColour = shaderTextures[0].Sample(SampleType, input.tex);
+    bumpMap = shaderTextures[1].Sample(SampleType, input.tex);
 	diffuseColour = shaderTextures[2].Sample(SampleType, input.tex);
 	aoColour = shaderTextures[3].Sample(SampleType, input.tex);
 	specularColour = shaderTextures[4].Sample(SampleType, input.tex);
 	
 	//colour = textureColour;
 	
-    // Sample the pixel in the bump map.
-    bumpMap = shaderTextures[1].Sample(SampleType, input.tex);
 
     // Expand the range of the normal value from (0, +1) to (-1, +1).
     bumpMap = (bumpMap * 2.0f) - 1.0f;
