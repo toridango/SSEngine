@@ -131,6 +131,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+
+
 	// Here we create and initialize the BumpMapShaderClass object.
 
 	// Create the bump map shader object.
@@ -407,9 +409,9 @@ bool GraphicsClass::Render(float rotation, float deltavalue)
 	// D3DXMatrixRotationY(&worldMatrix, rotation);
 	
 	// Scaling
-	transform._11 = 10.0f;
+	transform._11 = 20.0f;
 	transform._22 = 0.01f;
-	transform._33 = 10.0f;
+	transform._33 = 20.0f;
 	// Translation
 	transform._41 = 0.0f;
 	transform._42 = -2.0f;

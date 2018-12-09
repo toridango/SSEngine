@@ -1,4 +1,4 @@
-﻿  texturearrayclass.cpp
+﻿  graphicsclass.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\winerror.h(54723): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
@@ -55,4 +55,8 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(608): w
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\winerror.h(55162): note: see previous definition of 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\winerror.h(55171): note: see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
+c:\users\delom\docs\msc cgt\cmp502 graphics\ssengine\engine\graphicsclass.cpp(325): warning C4305: '+=': truncation from 'double' to 'float'
+c:\users\delom\docs\msc cgt\cmp502 graphics\ssengine\engine\graphicsclass.cpp(383): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\delom\docs\msc cgt\cmp502 graphics\ssengine\engine\graphicsclass.cpp(439): warning C4305: 'argument': truncation from 'double' to 'FLOAT'
+c:\users\delom\docs\msc cgt\cmp502 graphics\ssengine\engine\graphicsclass.cpp(440): warning C4305: 'argument': truncation from 'double' to 'FLOAT'
   Engine.vcxproj -> C:\Users\Delom\Docs\MSc CGT\CMP502 Graphics\SSEngine\Debug\Engine.exe

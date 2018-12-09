@@ -170,9 +170,12 @@ void CameraClass::Render()
 	pitch = m_rotationPitch * (D3DX_PI / 180.0);
 	yaw   = m_rotationYaw * (D3DX_PI / 180.0);
 	roll  = m_rotationRoll * (D3DX_PI / 180.0);
+	D3DXQUATERNION* q = new D3DXQUATERNION();
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
-	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
+	// D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
+	D3DXQuaternionRotationYawPitchRoll(q, yaw, pitch, roll);
+	D3DXMatrixRotationQuaternion(&rotationMatrix, q);
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	D3DXVec3TransformCoord(&lookAt, &lookAt, &rotationMatrix);

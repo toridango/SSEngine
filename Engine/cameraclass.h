@@ -37,6 +37,7 @@ public:
 private:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationPitch, m_rotationYaw, m_rotationRoll;
+	//float m_rotationPitch, m_rotationYaw, m_rotationRoll;
 	D3DXMATRIX m_viewMatrix;
 };
 
